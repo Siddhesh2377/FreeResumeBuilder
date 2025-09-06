@@ -1,480 +1,1462 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Free Resume Builder — no sign up required</title>
-  <meta name="description" content="Single‑file resume builder with optional AI import via OpenRouter. No signup.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <!-- pdf.js for client-side PDF text extraction (URL-only, no bundlers) -->
-  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
-  <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';</script>
-  <style>
-    :root{
-      --bg:#ffffff;--card:#ffffff;--fg:#0b1020;--muted:#6b7280;--border:#e5e7eb;--ring:#3b82f6;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;color:var(--fg);background:var(--bg)}
-    a{color:#111827;text-underline-offset:2px}
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    .container{max-width:1320px;margin:0 auto;padding:16px 24px 56px}
-    header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border)}
-    .header-inner{display:flex;align-items:center;justify-content:space-between;gap:14px;max-width:1320px;margin:0 auto;padding:10px 24px}
-    .brand{display:flex;align-items:center;gap:10px}
-    .logo{width:10px;height:10px;border-radius:50%;background:#111827}
-    .title{font-weight:700}
-    .tag{font-size:12px;color:var(--muted)}
-    nav{display:flex;gap:8px;flex-wrap:wrap}
-    .btn{appearance:none;border:1px solid var(--border);background:#fff;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer}
-    .btn:hover{background:#f7f7f8}
-    .btn.primary{border-color:#d1d5db;background:#f9fafb}
-    .btn.destructive{border-color:#fca5a5;color:#b91c1c}
+    <title>Free Resume Builder — AI Powered, No Sign Up</title>
 
-    .section{display:none}
-    .section.active{display:block}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:10px}
+    <!-- Core description -->
+    <meta name="description" content="Build a professional resume in minutes. Free, no signup, AI-powered import from PDF or text. Export as PDF instantly. Perfect for job seekers and students." />
 
-    /* Editor layout: widen the preview */
-    .editor-grid{display:grid;grid-template-columns:1fr 1.35fr;gap:24px;margin-top:16px}
-    @media (max-width: 1100px){.editor-grid{grid-template-columns:1fr;}}
+    <!-- Keywords for SEO -->
+    <meta name="keywords" content="resume builder, free resume, online CV maker, AI resume builder, ATS friendly resume, no signup resume, export PDF resume" />
 
-    .panel{padding:16px}
-    .panel h2{margin:0 0 8px;font-size:18px}
-    .group{margin:12px 0 16px}
-    .group label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
-    .input, textarea, select{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);outline:none;background:#fff}
-    .input:focus, textarea:focus{border-color:var(--ring);box-shadow:0 0 0 3px rgba(59,130,246,.15)}
-    textarea{min-height:84px;resize:vertical}
-    .row{display:flex;gap:10px}
-    .row>*{flex:1}
-    .mini{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-    .badge{background:#f3f4f6;border:1px solid var(--border);padding:4px 8px;border-radius:999px;font-size:12px}
-    .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    <!-- Open Graph for social/AI previews -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Free Resume Builder — AI Powered, No Sign Up" />
+    <meta property="og:description" content="Make a resume instantly. 100% free, AI-powered, no sign up required. Import PDF, edit, and export." />
+    <meta property="og:url" content="https://yourdomain.com/" />
+    <meta property="og:image" content="https://yourdomain.com/preview.png" />
 
-    .repeater{border:1px dashed var(--border);border-radius:8px;padding:10px}
-    .item{border:1px solid var(--border);border-radius:8px;padding:10px;margin:10px 0;background:#fff}
-    .item .topline{display:flex;gap:10px;align-items:center}
-    .item .actions{margin-left:auto;display:flex;gap:6px}
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Free Resume Builder — AI Powered, No Sign Up" />
+    <meta name="twitter:description" content="Instant, free, and AI-assisted resume builder. No signup needed." />
+    <meta name="twitter:image" content="https://yourdomain.com/preview.png" />
 
-    /* Preview */
-    .preview{padding:16px}
-    .resume{max-width:980px;margin:0 auto;color:#111}
-    .resume h1{font-size:28px;margin:0 0 8px;font-weight:700}
-    .resume .meta{color:#4b5563;font-size:13px;margin-bottom:8px}
-    .resume h2{font-size:16px;margin:18px 0 8px;border-bottom:1px solid var(--border);padding-bottom:6px}
-    .resume ul{margin:0 0 12px 18px;padding:0}
-    .resume li{margin:6px 0}
-    .resume .role{font-weight:600}
-    .resume .when{color:#6b7280;font-size:12px}
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png" />
 
-    /* Saved */
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
-    .card-pad{padding:12px}
-    .card h3{margin:0 0 6px;font-size:16px}
-    .muted{color:var(--muted);font-size:12px}
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    /* AI section */
-    .ai-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:22px;margin-top:16px}
-    @media (max-width: 1100px){.ai-grid{grid-template-columns:1fr}}
-    .drop{border:1px dashed var(--border);border-radius:8px;padding:18px;text-align:center}
-    .drop.drag{background:#f9fafb}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:12px;}
+    <!-- pdf.js for client-side PDF text extraction -->
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+    </script>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --card: #ffffff;
+            --fg: #0b1020;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --ring: #3b82f6;
+        }
+        .btn { display:inline-flex; align-items:center; gap:6px; text-decoration:none }
+        .star-badge {
+            display:inline-flex;
+            align-items:center;
+            background:#f8fafc;
+            border:1px solid rgba(11,16,32,.12);
+            border-radius:999px;
+            padding:2px 6px;
+            font-size:12px;
+        }
 
-    /* Print: only the resume, no UI */
-    @media print{
-      header, .editor-controls, .panel:first-child, .section:not(.editor), .preview>h2 {display:none !important}
-      .preview{padding:0 !important}
-      .resume{max-width:none !important}
-      .card, .panel{border:none !important;border-radius:0 !important;background:#fff !important}
-      body{background:#fff}
-    }
-  </style>
+        * {
+            box-sizing: border-box
+        }
+
+        html, body {
+            height: 100%
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, sans-serif;
+            color: var(--fg);
+            background: var(--bg)
+        }
+
+        a {
+            color: #111827;
+            text-underline-offset: 2px
+        }
+
+        .container {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 16px 24px 56px
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: #fff;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 10px 24px
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .logo {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #111827
+        }
+
+        .title {
+            font-weight: 700
+        }
+
+        .tag {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap
+        }
+
+        .btn {
+            appearance: none;
+            border: 1px solid var(--border);
+            background: #fff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer
+        }
+
+        .btn:hover {
+            background: #f7f7f8
+        }
+
+        .btn.primary {
+            border-color: #d1d5db;
+            background: #f9fafb
+        }
+
+        .btn.destructive {
+            border-color: #fca5a5;
+            color: #b91c1c
+        }
+
+        .section {
+            display: none
+        }
+
+        .section.active {
+            display: block
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px
+        }
+
+        /* Editor layout: widen the preview */
+        .editor-grid {
+            display: grid;
+            grid-template-columns:1fr 1.35fr;
+            gap: 24px;
+            margin-top: 16px
+        }
+
+        @media (max-width: 1100px) {
+            .editor-grid {
+                grid-template-columns:1fr;
+            }
+        }
+
+        .panel {
+            padding: 16px
+        }
+
+        .panel h2 {
+            margin: 0 0 8px;
+            font-size: 18px
+        }
+
+        .group {
+            margin: 12px 0 16px
+        }
+
+        .group label {
+            display: block;
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 6px
+        }
+
+        .input, textarea, select {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            outline: none;
+            background: #fff
+        }
+
+        .input:focus, textarea:focus {
+            border-color: var(--ring);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, .15)
+        }
+
+        textarea {
+            min-height: 84px;
+            resize: vertical
+        }
+
+        .row {
+            display: flex;
+            gap: 10px
+        }
+
+        .row > * {
+            flex: 1
+        }
+
+        .mini {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center
+        }
+
+        .badge {
+            background: #f3f4f6;
+            border: 1px solid var(--border);
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 12px
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center
+        }
+
+        .repeater {
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+            padding: 10px
+        }
+
+        .item {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px;
+            margin: 10px 0;
+            background: #fff
+        }
+
+        .item .topline {
+            display: flex;
+            gap: 10px;
+            align-items: center
+        }
+
+        .item .actions {
+            margin-left: auto;
+            display: flex;
+            gap: 6px
+        }
+
+        /* Preview */
+        .preview {
+            padding: 16px
+        }
+
+        .resume {
+            max-width: 980px;
+            margin: 0 auto;
+            color: #111
+        }
+
+        .resume h1 {
+            font-size: 28px;
+            margin: 0 0 8px;
+            font-weight: 700
+        }
+
+        .resume .meta {
+            color: #4b5563;
+            font-size: 13px;
+            margin-bottom: 8px
+        }
+
+        .resume h2 {
+            font-size: 16px;
+            margin: 18px 0 8px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 6px
+        }
+
+        .resume ul {
+            margin: 0 0 12px 18px;
+            padding: 0
+        }
+
+        .resume li {
+            margin: 6px 0
+        }
+
+        .resume .role {
+            font-weight: 600
+        }
+
+        .resume .when {
+            color: #6b7280;
+            font-size: 12px
+        }
+
+        /* Saved */
+        .grid {
+            display: grid;
+            grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+            gap: 12px
+        }
+
+        .card-pad {
+            padding: 12px
+        }
+
+        .card h3 {
+            margin: 0 0 6px;
+            font-size: 16px
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: 12px
+        }
+
+        /* AI section */
+        .ai-grid {
+            display: grid;
+            grid-template-columns:.85fr 1.15fr;
+            gap: 22px;
+            margin-top: 16px
+        }
+
+        @media (max-width: 1100px) {
+            .ai-grid {
+                grid-template-columns:1fr
+            }
+        }
+
+        .drop {
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+            padding: 18px;
+            text-align: center
+        }
+
+        .drop.drag {
+            background: #f9fafb
+        }
+
+        .mono {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 12px;
+        }
+
+        /* Print: only the resume, no UI */
+        @media print {
+            header, .editor-controls, .panel:first-child, .section:not(.editor), .preview > h2 {
+                display: none !important
+            }
+
+            .preview {
+                padding: 0 !important
+            }
+
+            .resume {
+                max-width: none !important
+            }
+
+            .card, .panel {
+                border: none !important;
+                border-radius: 0 !important;
+                background: #fff !important
+            }
+
+            body {
+                background: #fff
+            }
+            .loader {
+                position: absolute;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(255,255,255,0.7);
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity .2s ease;
+            }
+            .loader.active {
+                opacity: 1;
+                pointer-events: auto;
+            }
+            .spinner {
+                width: 32px;
+                height: 32px;
+                border: 3px solid #e5e7eb;
+                border-top-color: #3b82f6;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+            @keyframes spin {
+                to { transform: rotate(360deg); }
+            }
+
+        }
+    </style>
 </head>
 <body>
-  <header>
+<header>
     <div class="header-inner">
-      <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div>
-          <div class="title">Free Resume Builder</div>
-          <div class="tag">no sign up required · offline · single file</div>
+        <div class="brand">
+            <div aria-hidden="true" class="logo"></div>
+            <div>
+                <div class="title">Free Resume Builder</div>
+                <div class="tag">no sign up required · offline · single file</div>
+            </div>
         </div>
-      </div>
-      <nav>
-        <button class="btn" data-nav="editor">Editor</button>
-        <button class="btn" data-nav="ai">Make with AI</button>
-        <button class="btn" data-nav="saved">Saved</button>
-        <button class="btn" data-nav="about">About</button>
-        <button class="btn primary" id="newResumeBtn">New Resume</button>
-      </nav>
+        <nav>
+            <a class="btn" id="ghLink" href="https://github.com/Siddhesh2377/FreeResumeBuilder"
+               target="_blank" rel="noopener">
+                GitHub <span id="ghStars" class="star-badge" aria-label="GitHub stars">★</span>
+            </a>
+            <button class="btn" data-nav="editor">Editor</button>
+            <button class="btn" data-nav="ai">Make with AI</button>
+            <button class="btn" data-nav="saved">Saved</button>
+            <button class="btn" data-nav="about">About</button>
+            <button class="btn primary" id="newResumeBtn">New Resume</button>
+        </nav>
     </div>
-  </header>
 
-  <main class="container">
+</header>
+
+<main class="container">
     <!-- Section: Editor -->
-    <section id="section-editor" class="section active editor">
-      <div class="editor-grid">
-        <div class="panel card">
-          <h2>Edit Resume</h2>
-          <div class="editor-controls toolbar" style="margin:8px 0 12px">
-            <button class="btn" id="saveBtn">Save</button>
-            <button class="btn" id="fillDefaultBtn">Fill Sample</button>
-            <button class="btn" id="exportJsonBtn">Export JSON</button>
-            <button class="btn" id="exportHtmlBtn">Export HTML</button>
-            <button class="btn" id="printBtn">Print / PDF</button>
-            <button class="btn" id="resetBtn">Reset</button>
-          </div>
+    <section class="section active editor" id="section-editor">
+        <div class="editor-grid">
+            <div class="panel card">
+                <h2>Edit Resume</h2>
+                <div class="editor-controls toolbar" style="margin:8px 0 12px">
+                    <button class="btn" id="saveBtn">Save</button>
+                    <button class="btn" id="fillDefaultBtn">Fill Sample</button>
+                    <button class="btn" id="exportJsonBtn">Export JSON</button>
+                    <button class="btn" id="exportHtmlBtn">Export HTML</button>
+                    <button class="btn" id="printBtn">Print / PDF</button>
+                    <button class="btn" id="resetBtn">Reset</button>
+                </div>
 
-          <div class="group">
-            <label>Resume Title</label>
-            <input class="input" id="f_title" placeholder="e.g., Android Dev — 1 Page" />
-          </div>
-          <div class="group row">
-            <div>
-              <label>Name</label>
-              <input class="input" id="f_name" placeholder="Your full name" />
-            </div>
-            <div>
-              <label>Headline</label>
-              <input class="input" id="f_headline" placeholder="Android Developer (Kotlin/Compose)" />
-            </div>
-          </div>
-          <div class="group row">
-            <div>
-              <label>Location</label>
-              <input class="input" id="f_location" placeholder="City, Country" />
-            </div>
-            <div>
-              <label>Email</label>
-              <input class="input" id="f_email" placeholder="you@email.com" />
-            </div>
-            <div>
-              <label>Phone</label>
-              <input class="input" id="f_phone" placeholder="+91 …" />
-            </div>
-          </div>
-          <div class="group">
-            <label>Links (label, url) — one per line</label>
-            <textarea id="f_links" placeholder="GitHub, https://github.com/…
+                <div class="group">
+                    <label>Resume Title</label>
+                    <input class="input" id="f_title" placeholder="e.g., Android Dev — 1 Page"/>
+                </div>
+                <div class="group row">
+                    <div>
+                        <label>Name</label>
+                        <input class="input" id="f_name" placeholder="Your full name"/>
+                    </div>
+                    <div>
+                        <label>Headline</label>
+                        <input class="input" id="f_headline" placeholder="Android Developer (Kotlin/Compose)"/>
+                    </div>
+                </div>
+                <div class="group row">
+                    <div>
+                        <label>Location</label>
+                        <input class="input" id="f_location" placeholder="City, Country"/>
+                    </div>
+                    <div>
+                        <label>Email</label>
+                        <input class="input" id="f_email" placeholder="you@email.com"/>
+                    </div>
+                    <div>
+                        <label>Phone</label>
+                        <input class="input" id="f_phone" placeholder="+91 …"/>
+                    </div>
+                </div>
+                <div class="group">
+                    <label>Links (label, url) — one per line</label>
+                    <textarea id="f_links" placeholder="GitHub, https://github.com/…
 LinkedIn, https://linkedin.com/in/…"></textarea>
-          </div>
-          <div class="group">
-            <label>Summary</label>
-            <textarea id="f_summary" placeholder="2–4 lines about your impact, tech stack, and outcomes."></textarea>
-          </div>
-          <div class="group">
-            <div class="mini"><strong>Experience</strong><span class="badge" id="expCount">0 items</span></div>
-            <div class="repeater" id="expWrap"></div>
-            <div class="toolbar" style="margin-top:8px"><button class="btn" id="addExp">Add Experience</button></div>
-          </div>
-          <div class="group">
-            <div class="mini"><strong>Projects</strong><span class="badge" id="projCount">0 items</span></div>
-            <div class="repeater" id="projWrap"></div>
-            <div class="toolbar" style="margin-top:8px"><button class="btn" id="addProj">Add Project</button></div>
-          </div>
-          <div class="group">
-            <div class="mini"><strong>Education</strong><span class="badge" id="eduCount">0 items</span></div>
-            <div class="repeater" id="eduWrap"></div>
-            <div class="toolbar" style="margin-top:8px"><button class="btn" id="addEdu">Add Education</button></div>
-          </div>
-          <div class="row">
-            <div class="group">
-              <label>Primary Skills — one per line</label>
-              <textarea id="f_skills_primary" placeholder="Kotlin
+                </div>
+                <div class="group">
+                    <label>Summary</label>
+                    <textarea id="f_summary"
+                              placeholder="2–4 lines about your impact, tech stack, and outcomes."></textarea>
+                </div>
+                <div class="group">
+                    <div class="mini"><strong>Experience</strong><span class="badge" id="expCount">0 items</span></div>
+                    <div class="repeater" id="expWrap"></div>
+                    <div class="toolbar" style="margin-top:8px">
+                        <button class="btn" id="addExp">Add Experience</button>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="mini"><strong>Projects</strong><span class="badge" id="projCount">0 items</span></div>
+                    <div class="repeater" id="projWrap"></div>
+                    <div class="toolbar" style="margin-top:8px">
+                        <button class="btn" id="addProj">Add Project</button>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="mini"><strong>Education</strong><span class="badge" id="eduCount">0 items</span></div>
+                    <div class="repeater" id="eduWrap"></div>
+                    <div class="toolbar" style="margin-top:8px">
+                        <button class="btn" id="addEdu">Add Education</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="group">
+                        <label>Primary Skills — one per line</label>
+                        <textarea id="f_skills_primary" placeholder="Kotlin
 Jetpack Compose
 Android Architecture"></textarea>
-            </div>
-            <div class="group">
-              <label>Secondary Skills — one per line</label>
-              <textarea id="f_skills_secondary" placeholder="Rust
+                    </div>
+                    <div class="group">
+                        <label>Secondary Skills — one per line</label>
+                        <textarea id="f_skills_secondary" placeholder="Rust
 React/Next.js
 ONNX Runtime"></textarea>
+                    </div>
+                </div>
+                <div class="group">
+                    <label>Certifications — one per line</label>
+                    <textarea id="f_certs" placeholder="e.g., Google AAD (Assoc. Android Dev)"></textarea>
+                </div>
             </div>
-          </div>
-          <div class="group">
-            <label>Certifications — one per line</label>
-            <textarea id="f_certs" placeholder="e.g., Google AAD (Assoc. Android Dev)"></textarea>
-          </div>
-        </div>
 
-        <div class="panel card preview">
-          <h2>Live Preview</h2>
-          <div id="preview" class="resume" aria-live="polite"></div>
+            <div class="panel card preview">
+                <h2>Live Preview</h2>
+                <div aria-live="polite" class="resume" id="preview"></div>
+            </div>
         </div>
-      </div>
     </section>
 
     <!-- Section: AI -->
-    <section id="section-ai" class="section">
-      <div class="ai-grid">
-        <!-- Left column: API key + file upload stacked vertically -->
-        <div class="panel card">
-          <h2>Make with AI</h2>
-          <div class="group">
-            <label>OpenRouter API Key <span class="muted">(stored locally if you choose)</span></label>
-            <input class="input" id="ai_key" placeholder="or_key_..." />
-            <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
-              <label style="font-size:12px;color:var(--muted)"><input type="checkbox" id="rememberKey"> Remember key in this browser</label>
+    <section class="section" id="section-ai">
+        <div class="ai-grid">
+            <!-- Left column: API key + file upload stacked vertically -->
+            <div class="panel card">
+                <h2>Make with AI</h2>
+                <div class="group">
+                    <label>OpenRouter API Key <span class="muted">(stored locally if you choose)</span></label>
+                    <input class="input" id="ai_key" placeholder="or_key_..."/>
+                    <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+                        <label style="font-size:12px;color:var(--muted)"><input id="rememberKey" type="checkbox">
+                            Remember key in this browser</label>
+                    </div>
+                </div>
+                <div class="group">
+                    <label>Upload your old resume (PDF or .txt/.md)</label>
+                    <div class="drop" id="dropZone">Drop file here or <label for="ai_file"
+                                                                             style="text-decoration:underline;cursor:pointer">choose
+                        a file</label></div>
+                    <input accept=".pdf,.txt,.md,.markdown,.json,.html" id="ai_file" style="display:none" type="file"/>
+                </div>
+                <div class="group">
+                    <label>Extracted text</label>
+                    <textarea class="mono" id="ai_src"
+                              placeholder="Your resume text will show here after upload..."></textarea>
+                </div>
+                <div class="toolbar">
+                    <button class="btn" id="ai_generateBtn">Generate with AI</button>
+                    <button class="btn destructive" id="ai_clearBtn">Clear</button>
+                </div>
+                <p class="muted" style="font-size:12px;margin-top:10px">Model: <code class="mono">openai/gpt-oss-20b:free</code>
+                    via structured outputs. Key never leaves your device except in the request you make directly to
+                    OpenRouter.</p>
             </div>
-          </div>
-          <div class="group">
-            <label>Upload your old resume (PDF or .txt/.md)</label>
-            <div id="dropZone" class="drop">Drop file here or <label for="ai_file" style="text-decoration:underline;cursor:pointer">choose a file</label></div>
-            <input type="file" id="ai_file" accept=".pdf,.txt,.md,.markdown,.json,.html" style="display:none" />
-          </div>
-          <div class="group">
-            <label>Extracted text</label>
-            <textarea id="ai_src" class="mono" placeholder="Your resume text will show here after upload..."></textarea>
-          </div>
-          <div class="toolbar">
-            <button class="btn" id="ai_generateBtn">Generate with AI</button>
-            <button class="btn destructive" id="ai_clearBtn">Clear</button>
-          </div>
-          <p class="muted" style="font-size:12px;margin-top:10px">Model: <code class="mono">openai/gpt-oss-20b:free</code> via structured outputs. Key never leaves your device except in the request you make directly to OpenRouter.</p>
-        </div>
 
-        <!-- Right column: AI output preview + apply -->
-        <div class="panel card preview">
-          <h2>AI Result</h2>
-          <div id="aiPreview" class="resume" aria-live="polite"></div>
-          <div class="toolbar" style="margin-top:10px">
-            <button class="btn" id="ai_applyBtn">Use in Editor</button>
-            <button class="btn" id="ai_saveBtn">Save AI Result</button>
-          </div>
+            <!-- Right column: AI output preview + apply -->
+            <div class="panel card preview" style="position:relative">
+                <h2>AI Result</h2>
+                <div aria-live="polite" class="resume" id="aiPreview"></div>
+
+                <!-- Loader overlay -->
+                <div class="loader" id="aiLoader">
+                    <div class="spinner" aria-label="Loading"></div>
+                </div>
+
+                <div class="toolbar" style="margin-top:10px">
+                    <button class="btn" id="ai_applyBtn">Use in Editor</button>
+                    <button class="btn" id="ai_saveBtn">Save AI Result</button>
+                </div>
+            </div>
         </div>
-      </div>
     </section>
 
     <!-- Section: Saved -->
-    <section id="section-saved" class="section">
-      <div class="card card-pad" style="margin:16px 0">
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap">
-          <div>
-            <h2 style="margin:0">Your Resumes</h2>
-            <div class="muted">Stored locally in your browser</div>
-          </div>
-          <div class="toolbar">
-            <label class="btn" for="importJson">Import JSON</label>
-            <input type="file" id="importJson" accept="application/json" style="display:none" />
-          </div>
+    <section class="section" id="section-saved">
+        <div class="card card-pad" style="margin:16px 0">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap">
+                <div>
+                    <h2 style="margin:0">Your Resumes</h2>
+                    <div class="muted">Stored locally in your browser</div>
+                </div>
+                <div class="toolbar">
+                    <label class="btn" for="importJson">Import JSON</label>
+                    <input accept="application/json" id="importJson" style="display:none" type="file"/>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="grid" id="savedGrid"></div>
+        <div class="grid" id="savedGrid"></div>
     </section>
 
     <!-- Section: About -->
-    <section id="section-about" class="section about">
-      <div class="card card-pad" style="margin-top:16px">
-        <h2>About</h2>
-        <p>Single‑file, offline resume builder. Optional AI import uses your own OpenRouter key. Everything else stays local in <strong>localStorage</strong>.</p>
-        <p>Design goals: clean, ChatGPT‑style UI; accessible typography; ATS‑friendly HTML in the preview; zero server backend.</p>
-        <p class="muted" style="font-size:12px">Tip: When printing, disable the browser’s 
-          <em>Headers & footers</em> to remove date/URL.</p>
-      </div>
+    <section class="section about" id="section-about">
+        <div class="card card-pad" style="margin-top:16px">
+            <h2>About</h2>
+            <p>Single‑file, offline resume builder. Optional AI import uses your own OpenRouter key. Everything else
+                stays local in <strong>localStorage</strong>.</p>
+            <p>Design goals: clean, ChatGPT‑style UI; accessible typography; ATS‑friendly HTML in the preview; zero
+                server backend.</p>
+            <p class="muted" style="font-size:12px">Tip: When printing, disable the browser’s
+                <em>Headers & footers</em> to remove date/URL.</p>
+        </div>
     </section>
-  </main>
+</main>
 
-  <script>
+<script>
+
     // ======= State =======
     const STORAGE_KEY = 'frb.resumes.v1';
     const API_STORAGE_KEY = 'frb.openrouter.key';
     let allResumes = loadAll();
     let current = makeBlankResume();
     let aiResume = null; // holds last AI result
+    async function updateGitHubStars(){
+        try {
+            const res = await fetch("https://api.github.com/repos/Siddhesh2377/FreeResumeBuilder");
+            if(!res.ok) throw new Error();
+            const data = await res.json();
+            const el = document.getElementById("ghStars");
+            if(el) el.textContent = "★ " + new Intl.NumberFormat().format(data.stargazers_count);
+        } catch {
+            const el = document.getElementById("ghStars");
+            if(el) el.textContent = "★ Star";
+        }
+    }
+    updateGitHubStars();
 
     // ======= Routing =======
     const sections = {
-      editor: document.getElementById('section-editor'),
-      ai: document.getElementById('section-ai'),
-      saved: document.getElementById('section-saved'),
-      about: document.getElementById('section-about'),
+        editor: document.getElementById('section-editor'),
+        ai: document.getElementById('section-ai'),
+        saved: document.getElementById('section-saved'),
+        about: document.getElementById('section-about'),
     };
-    document.querySelectorAll('[data-nav]').forEach(btn=>btn.addEventListener('click',()=>showSection(btn.dataset.nav)));
-    function showSection(key){ for(const k in sections){ sections[k].classList.toggle('active', k===key);} if(key==='saved') renderSaved(); }
+    document.querySelectorAll('[data-nav]').forEach(btn => btn.addEventListener('click', () => showSection(btn.dataset.nav)));
+
+    function showSection(key) {
+        for (const k in sections) {
+            sections[k].classList.toggle('active', k === key);
+        }
+        if (key === 'saved') renderSaved();
+    }
 
     // ======= Utils =======
-    function uuid(){return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0,v=c==='x'?r:(r&0x3|0x8);return v.toString(16)})}
-    function now(){return new Date().toISOString()}
-    function lines(txt){return (txt||'').split(/\r?\n/).map(s=>s.trim()).filter(Boolean)}
-    function pairs(txt){return lines(txt).map(l=>{const i=l.indexOf(','); if(i===-1) return {label:l, url:''}; return {label:l.slice(0,i).trim(), url:l.slice(i+1).trim()};})}
+    function uuid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+            const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16)
+        })
+    }
+
+    function now() {
+        return new Date().toISOString()
+    }
+
+    function lines(txt) {
+        return (txt || '').split(/\r?\n/).map(s => s.trim()).filter(Boolean)
+    }
+
+    function pairs(txt) {
+        return lines(txt).map(l => {
+            const i = l.indexOf(',');
+            if (i === -1) return {label: l, url: ''};
+            return {label: l.slice(0, i).trim(), url: l.slice(i + 1).trim()};
+        })
+    }
 
     // ======= Storage =======
-    function loadAll(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]') }catch(e){ return [] } }
-    function saveAll(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(allResumes)) }
-    function upsertResume(r){ const i = allResumes.findIndex(x=>x.id===r.id); r.meta.updatedAt = now(); if(i===-1){ allResumes.unshift(r) } else { allResumes[i]=r } saveAll(); }
-    function deleteResume(id){ allResumes = allResumes.filter(x=>x.id!==id); saveAll(); }
+    function loadAll() {
+        try {
+            return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
+        } catch (e) {
+            return []
+        }
+    }
+
+    function saveAll() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(allResumes))
+    }
+
+    function upsertResume(r) {
+        const i = allResumes.findIndex(x => x.id === r.id);
+        r.meta.updatedAt = now();
+        if (i === -1) {
+            allResumes.unshift(r)
+        } else {
+            allResumes[i] = r
+        }
+        saveAll();
+    }
+
+    function deleteResume(id) {
+        allResumes = allResumes.filter(x => x.id !== id);
+        saveAll();
+    }
 
     // ======= Model =======
-    function makeBlankResume(){ return { id:uuid(), title:'Untitled Resume', meta:{createdAt:now(), updatedAt:now()}, profile:{name:'',headline:'',location:'',email:'',phone:'',links:[]}, summary:'', experience:[], projects:[], education:[], skills:{primary:[],secondary:[]}, certifications:[], } }
-    function makeSampleResume(){ return { id: current.id, title:'Android Developer — 1 Page', meta:{createdAt: current.meta.createdAt || now(), updatedAt: now()}, profile:{ name:'Alex Dev', headline:'Android Developer (Kotlin/Compose + AI)', location:'Mumbai, India', email:'alex.dev@example.com', phone:'+91 90000 00000', links:[{label:'GitHub',url:'https://github.com/username'},{label:'LinkedIn',url:'https://linkedin.com/in/username'}]}, summary:'Shipped Android apps with Jetpack Compose, coroutines/Flow, and on‑device AI. Obsessed with clean architecture, fast startup, and rock‑solid offline UX.', experience:[{company:'Acme Apps',role:'Android Engineer',location:'Remote',start:'2023-06',end:'Present',bullets:['Led migration to Jetpack Compose; cut UI code by ~35% and improved render stability.','Integrated on‑device inference (ONNX Runtime) for offline features; reduced API calls by 60%.','Implemented modular navigation + feature flags; enabled A/B rollouts with zero crashes.']},{company:'Dev Studio',role:'Android Developer Intern',location:'Mumbai',start:'2022-05',end:'2022-12',bullets:['Built Kotlin DSL for network layer; reduced boilerplate and improved testability.','Optimized cold‑start time by 25% with Baseline Profiles and lazy initialization.']}], projects:[{name:'TaskPilot',link:'',tech:['Kotlin','Compose','Room','WorkManager'],bullets:['Smart reminders with natural‑language parsing and offline sync.','Widget + notification actions; 10k+ DAU in beta.']},{name:'Local AI Notes',link:'',tech:['Kotlin','ONNX Runtime','TFLite'],bullets:['On‑device summarization and tagging for notes; privacy‑first.']}], education:[{school:'State Tech University',degree:'Diploma in Computer Science',start:'2021',end:'2024',details:['Coursework: DS&A, OS, Networks, Mobile Dev','Lead, Android Club']}], skills:{primary:['Kotlin','Jetpack Compose','Coroutines/Flow','Clean Architecture','Room','WorkManager'], secondary:['Rust (basics)','React/Next.js','ONNX Runtime','TFLite']}, certifications:['Google Associate Android Developer (mock)'] } }
+    function makeBlankResume() {
+        return {
+            id: uuid(),
+            title: 'Untitled Resume',
+            meta: {createdAt: now(), updatedAt: now()},
+            profile: {name: '', headline: '', location: '', email: '', phone: '', links: []},
+            summary: '',
+            experience: [],
+            projects: [],
+            education: [],
+            skills: {primary: [], secondary: []},
+            certifications: [],
+        }
+    }
+
+    function makeSampleResume() {
+        return {
+            id: current.id,
+            title: 'Android Developer — 1 Page',
+            meta: {createdAt: current.meta.createdAt || now(), updatedAt: now()},
+            profile: {
+                name: 'Alex Dev',
+                headline: 'Android Developer (Kotlin/Compose + AI)',
+                location: 'Mumbai, India',
+                email: 'alex.dev@example.com',
+                phone: '+91 90000 00000',
+                links: [{label: 'GitHub', url: 'https://github.com/username'}, {
+                    label: 'LinkedIn',
+                    url: 'https://linkedin.com/in/username'
+                }]
+            },
+            summary: 'Shipped Android apps with Jetpack Compose, coroutines/Flow, and on‑device AI. Obsessed with clean architecture, fast startup, and rock‑solid offline UX.',
+            experience: [{
+                company: 'Acme Apps',
+                role: 'Android Engineer',
+                location: 'Remote',
+                start: '2023-06',
+                end: 'Present',
+                bullets: ['Led migration to Jetpack Compose; cut UI code by ~35% and improved render stability.', 'Integrated on‑device inference (ONNX Runtime) for offline features; reduced API calls by 60%.', 'Implemented modular navigation + feature flags; enabled A/B rollouts with zero crashes.']
+            }, {
+                company: 'Dev Studio',
+                role: 'Android Developer Intern',
+                location: 'Mumbai',
+                start: '2022-05',
+                end: '2022-12',
+                bullets: ['Built Kotlin DSL for network layer; reduced boilerplate and improved testability.', 'Optimized cold‑start time by 25% with Baseline Profiles and lazy initialization.']
+            }],
+            projects: [{
+                name: 'TaskPilot',
+                link: '',
+                tech: ['Kotlin', 'Compose', 'Room', 'WorkManager'],
+                bullets: ['Smart reminders with natural‑language parsing and offline sync.', 'Widget + notification actions; 10k+ DAU in beta.']
+            }, {
+                name: 'Local AI Notes',
+                link: '',
+                tech: ['Kotlin', 'ONNX Runtime', 'TFLite'],
+                bullets: ['On‑device summarization and tagging for notes; privacy‑first.']
+            }],
+            education: [{
+                school: 'State Tech University',
+                degree: 'Diploma in Computer Science',
+                start: '2021',
+                end: '2024',
+                details: ['Coursework: DS&A, OS, Networks, Mobile Dev', 'Lead, Android Club']
+            }],
+            skills: {
+                primary: ['Kotlin', 'Jetpack Compose', 'Coroutines/Flow', 'Clean Architecture', 'Room', 'WorkManager'],
+                secondary: ['Rust (basics)', 'React/Next.js', 'ONNX Runtime', 'TFLite']
+            },
+            certifications: ['Google Associate Android Developer (mock)']
+        }
+    }
 
     // ======= Bind Editor Form =======
-    const f = { title:el('f_title'), name:el('f_name'), headline:el('f_headline'), location:el('f_location'), email:el('f_email'), phone:el('f_phone'), links:el('f_links'), summary:el('f_summary'), skillsPrimary:el('f_skills_primary'), skillsSecondary:el('f_skills_secondary'), certs:el('f_certs') };
-    function el(id){return document.getElementById(id)}
+    const f = {
+        title: el('f_title'),
+        name: el('f_name'),
+        headline: el('f_headline'),
+        location: el('f_location'),
+        email: el('f_email'),
+        phone: el('f_phone'),
+        links: el('f_links'),
+        summary: el('f_summary'),
+        skillsPrimary: el('f_skills_primary'),
+        skillsSecondary: el('f_skills_secondary'),
+        certs: el('f_certs')
+    };
 
-    function syncFormToModel(){ current.title=f.title.value.trim()||'Untitled Resume'; current.profile.name=f.name.value.trim(); current.profile.headline=f.headline.value.trim(); current.profile.location=f.location.value.trim(); current.profile.email=f.email.value.trim(); current.profile.phone=f.phone.value.trim(); current.profile.links=pairs(f.links.value); current.summary=f.summary.value; current.skills.primary=lines(f.skillsPrimary.value); current.skills.secondary=lines(f.skillsSecondary.value); current.certifications=lines(f.certs.value); }
-    function syncModelToForm(){ f.title.value=current.title||''; f.name.value=current.profile.name||''; f.headline.value=current.profile.headline||''; f.location.value=current.profile.location||''; f.email.value=current.profile.email||''; f.phone.value=current.profile.phone||''; f.links.value=(current.profile.links||[]).map(x=>`${x.label}${x.url?`, ${x.url}`:''}`).join('\n'); f.summary.value=current.summary||''; f.skillsPrimary.value=(current.skills.primary||[]).join('\n'); f.skillsSecondary.value=(current.skills.secondary||[]).join('\n'); text('expCount', `${current.experience.length} items`); text('projCount', `${current.projects.length} items`); text('eduCount', `${current.education.length} items`); renderRepeater('expWrap', current.experience, renderExpItem); renderRepeater('projWrap', current.projects, renderProjItem); renderRepeater('eduWrap', current.education, renderEduItem); renderPreview(); }
-    function text(id,v){const n=document.getElementById(id); if(n) n.textContent=v}
+    function el(id) {
+        return document.getElementById(id)
+    }
+
+    function syncFormToModel() {
+        current.title = f.title.value.trim() || 'Untitled Resume';
+        current.profile.name = f.name.value.trim();
+        current.profile.headline = f.headline.value.trim();
+        current.profile.location = f.location.value.trim();
+        current.profile.email = f.email.value.trim();
+        current.profile.phone = f.phone.value.trim();
+        current.profile.links = pairs(f.links.value);
+        current.summary = f.summary.value;
+        current.skills.primary = lines(f.skillsPrimary.value);
+        current.skills.secondary = lines(f.skillsSecondary.value);
+        current.certifications = lines(f.certs.value);
+    }
+
+    function syncModelToForm() {
+        f.title.value = current.title || '';
+        f.name.value = current.profile.name || '';
+        f.headline.value = current.profile.headline || '';
+        f.location.value = current.profile.location || '';
+        f.email.value = current.profile.email || '';
+        f.phone.value = current.profile.phone || '';
+        f.links.value = (current.profile.links || []).map(x => `${x.label}${x.url ? `, ${x.url}` : ''}`).join('\n');
+        f.summary.value = current.summary || '';
+        f.skillsPrimary.value = (current.skills.primary || []).join('\n');
+        f.skillsSecondary.value = (current.skills.secondary || []).join('\n');
+        text('expCount', `${current.experience.length} items`);
+        text('projCount', `${current.projects.length} items`);
+        text('eduCount', `${current.education.length} items`);
+        renderRepeater('expWrap', current.experience, renderExpItem);
+        renderRepeater('projWrap', current.projects, renderProjItem);
+        renderRepeater('eduWrap', current.education, renderEduItem);
+        renderPreview();
+    }
+
+    function text(id, v) {
+        const n = document.getElementById(id);
+        if (n) n.textContent = v
+    }
 
     // ======= Repeaters =======
-    function renderRepeater(id, arr, make){ const wrap = document.getElementById(id); if(!wrap) return; wrap.innerHTML=''; arr.forEach((obj,i)=>wrap.appendChild(make(obj,i))); }
-    function renderExpItem(exp,i){ const el = document.createElement('div'); el.className='item'; el.innerHTML=`<div class="topline"><strong style="flex:1">Experience #${i+1}</strong><div class="actions"><button class="btn" data-act="up">↑</button><button class="btn" data-act="down">↓</button><button class="btn" data-act="del">Delete</button></div></div><div class="row" style="margin-top:8px"><input class="input" placeholder="Company" value="${esc(exp.company)}" data-k="company"><input class="input" placeholder="Role" value="${esc(exp.role)}" data-k="role"></div><div class="row" style="margin-top:8px"><input class="input" placeholder="Location" value="${esc(exp.location)}" data-k="location"><input class="input" placeholder="Start (YYYY-MM)" value="${esc(exp.start)}" data-k="start"><input class="input" placeholder="End (YYYY-MM or Present)" value="${esc(exp.end)}" data-k="end"></div><div class="group" style="margin-top:8px"><label>Bullets — one per line</label><textarea data-k="bullets">${(exp.bullets||[]).map(escapeHtml).join('\n')}</textarea></div>`; el.addEventListener('input',e=>{const t=e.target,k=t.getAttribute('data-k'); if(!k) return; if(k==='bullets'){exp.bullets=lines(t.value)} else {exp[k]=t.value} renderPreview();}); bindItemButtons(el, current.experience, i); return el; }
-    function renderProjItem(proj,i){ const el=document.createElement('div'); el.className='item'; el.innerHTML=`<div class="topline"><strong style="flex:1">Project #${i+1}</strong><div class="actions"><button class="btn" data-act="up">↑</button><button class="btn" data-act="down">↓</button><button class="btn" data-act="del">Delete</button></div></div><div class="row" style="margin-top:8px"><input class="input" placeholder="Name" value="${esc(proj.name)}" data-k="name"><input class="input" placeholder="Link (optional)" value="${esc(proj.link)}" data-k="link"></div><div class="group" style="margin-top:8px"><label>Tech — comma separated</label><input class="input" value="${esc((proj.tech||[]).join(', '))}" data-k="tech"></div><div class="group" style="margin-top:8px"><label>Bullets — one per line</label><textarea data-k="bullets">${(proj.bullets||[]).map(escapeHtml).join('\n')}</textarea></div>`; el.addEventListener('input',e=>{const t=e.target,k=t.getAttribute('data-k'); if(!k) return; if(k==='bullets'){proj.bullets=lines(t.value)} else if(k==='tech'){ proj.tech=t.value.split(',').map(s=>s.trim()).filter(Boolean)} else {proj[k]=t.value} renderPreview();}); bindItemButtons(el, current.projects, i); return el; }
-    function renderEduItem(ed,i){ const el=document.createElement('div'); el.className='item'; el.innerHTML=`<div class="topline"><strong style="flex:1">Education #${i+1}</strong><div class="actions"><button class="btn" data-act="up">↑</button><button class="btn" data-act="down">↓</button><button class="btn" data-act="del">Delete</button></div></div><div class="row" style="margin-top:8px"><input class="input" placeholder="School" value="${esc(ed.school)}" data-k="school"><input class="input" placeholder="Degree" value="${esc(ed.degree)}" data-k="degree"></div><div class="row" style="margin-top:8px"><input class="input" placeholder="Start (YYYY)" value="${esc(ed.start)}" data-k="start"><input class="input" placeholder="End (YYYY)" value="${esc(ed.end)}" data-k="end"></div><div class="group" style="margin-top:8px"><label>Details — one per line</label><textarea data-k="details">${(ed.details||[]).map(escapeHtml).join('\n')}</textarea></div>`; el.addEventListener('input',e=>{const t=e.target,k=t.getAttribute('data-k'); if(!k) return; if(k==='details'){ed.details=lines(t.value)} else {ed[k]=t.value} renderPreview();}); bindItemButtons(el, current.education, i); return el; }
-    function bindItemButtons(el, arr, i){ el.querySelector('[data-act="del"]').onclick=()=>{arr.splice(i,1); syncModelToForm();}; el.querySelector('[data-act="up"]').onclick=()=>{ if(i>0){[arr[i-1],arr[i]]=[arr[i],arr[i-1]]; syncModelToForm();}}; el.querySelector('[data-act="down"]').onclick=()=>{ if(i<arr.length-1){[arr[i+1],arr[i]]=[arr[i],arr[i+1]]; syncModelToForm();}} }
+    function renderRepeater(id, arr, make) {
+        const wrap = document.getElementById(id);
+        if (!wrap) return;
+        wrap.innerHTML = '';
+        arr.forEach((obj, i) => wrap.appendChild(make(obj, i)));
+    }
 
-    function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
-    const esc = x=>escapeHtml(x||'');
+    function renderExpItem(exp, i) {
+        const el = document.createElement('div');
+        el.className = 'item';
+        el.innerHTML = `<div class="topline"><strong style="flex:1">Experience #${i + 1}</strong><div class="actions"><button class="btn" data-act="up">↑</button><button class="btn" data-act="down">↓</button><button class="btn" data-act="del">Delete</button></div></div><div class="row" style="margin-top:8px"><input class="input" placeholder="Company" value="${esc(exp.company)}" data-k="company"><input class="input" placeholder="Role" value="${esc(exp.role)}" data-k="role"></div><div class="row" style="margin-top:8px"><input class="input" placeholder="Location" value="${esc(exp.location)}" data-k="location"><input class="input" placeholder="Start (YYYY-MM)" value="${esc(exp.start)}" data-k="start"><input class="input" placeholder="End (YYYY-MM or Present)" value="${esc(exp.end)}" data-k="end"></div><div class="group" style="margin-top:8px"><label>Bullets — one per line</label><textarea data-k="bullets">${(exp.bullets || []).map(escapeHtml).join('\n')}</textarea></div>`;
+        el.addEventListener('input', e => {
+            const t = e.target, k = t.getAttribute('data-k');
+            if (!k) return;
+            if (k === 'bullets') {
+                exp.bullets = lines(t.value)
+            } else {
+                exp[k] = t.value
+            }
+            renderPreview();
+        });
+        bindItemButtons(el, current.experience, i);
+        return el;
+    }
+
+    function renderProjItem(proj, i) {
+        const el = document.createElement('div');
+        el.className = 'item';
+        el.innerHTML = `<div class="topline"><strong style="flex:1">Project #${i + 1}</strong><div class="actions"><button class="btn" data-act="up">↑</button><button class="btn" data-act="down">↓</button><button class="btn" data-act="del">Delete</button></div></div><div class="row" style="margin-top:8px"><input class="input" placeholder="Name" value="${esc(proj.name)}" data-k="name"><input class="input" placeholder="Link (optional)" value="${esc(proj.link)}" data-k="link"></div><div class="group" style="margin-top:8px"><label>Tech — comma separated</label><input class="input" value="${esc((proj.tech || []).join(', '))}" data-k="tech"></div><div class="group" style="margin-top:8px"><label>Bullets — one per line</label><textarea data-k="bullets">${(proj.bullets || []).map(escapeHtml).join('\n')}</textarea></div>`;
+        el.addEventListener('input', e => {
+            const t = e.target, k = t.getAttribute('data-k');
+            if (!k) return;
+            if (k === 'bullets') {
+                proj.bullets = lines(t.value)
+            } else if (k === 'tech') {
+                proj.tech = t.value.split(',').map(s => s.trim()).filter(Boolean)
+            } else {
+                proj[k] = t.value
+            }
+            renderPreview();
+        });
+        bindItemButtons(el, current.projects, i);
+        return el;
+    }
+
+    function renderEduItem(ed, i) {
+        const el = document.createElement('div');
+        el.className = 'item';
+        el.innerHTML = `<div class="topline"><strong style="flex:1">Education #${i + 1}</strong><div class="actions"><button class="btn" data-act="up">↑</button><button class="btn" data-act="down">↓</button><button class="btn" data-act="del">Delete</button></div></div><div class="row" style="margin-top:8px"><input class="input" placeholder="School" value="${esc(ed.school)}" data-k="school"><input class="input" placeholder="Degree" value="${esc(ed.degree)}" data-k="degree"></div><div class="row" style="margin-top:8px"><input class="input" placeholder="Start (YYYY)" value="${esc(ed.start)}" data-k="start"><input class="input" placeholder="End (YYYY)" value="${esc(ed.end)}" data-k="end"></div><div class="group" style="margin-top:8px"><label>Details — one per line</label><textarea data-k="details">${(ed.details || []).map(escapeHtml).join('\n')}</textarea></div>`;
+        el.addEventListener('input', e => {
+            const t = e.target, k = t.getAttribute('data-k');
+            if (!k) return;
+            if (k === 'details') {
+                ed.details = lines(t.value)
+            } else {
+                ed[k] = t.value
+            }
+            renderPreview();
+        });
+        bindItemButtons(el, current.education, i);
+        return el;
+    }
+
+    function bindItemButtons(el, arr, i) {
+        el.querySelector('[data-act="del"]').onclick = () => {
+            arr.splice(i, 1);
+            syncModelToForm();
+        };
+        el.querySelector('[data-act="up"]').onclick = () => {
+            if (i > 0) {
+                [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
+                syncModelToForm();
+            }
+        };
+        el.querySelector('[data-act="down"]').onclick = () => {
+            if (i < arr.length - 1) {
+                [arr[i + 1], arr[i]] = [arr[i], arr[i + 1]];
+                syncModelToForm();
+            }
+        }
+    }
+
+    function escapeHtml(s) {
+        return String(s || '').replace(/[&<>"']/g, c => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            "\"": "&quot;",
+            "'": "&#39;"
+        }[c]))
+    }
+
+    const esc = x => escapeHtml(x || '');
 
     // ======= Preview (Editor) =======
-    function renderPreview(){ syncFormToModel(); const r=current; const root=document.getElementById('preview'); root.innerHTML = renderResumeHTML(r); }
-    function renderResumeHTML(r){ const linkHtml=(r.profile.links||[]).map(l=> l.url?`<a href="${esc(l.url)}">${esc(l.label)}</a>`:`<span>${esc(l.label)}</span>`).join(' · ');
-      const skills=[ r.skills.primary.length?`<strong>Primary:</strong> ${r.skills.primary.map(esc).join(', ')}`:'', r.skills.secondary.length?`<strong>Secondary:</strong> ${r.skills.secondary.map(esc).join(', ')}`:'' ].filter(Boolean).join('<br>');
-      const expHtml=(r.experience||[]).map(e=>`<section><div class="role">${esc(e.role)} — ${esc(e.company)}</div><div class="when">${esc(e.location)}${e.location&&e.start?' · ':''}${esc(e.start)}${e.end?` – ${esc(e.end)}`:''}</div>${(e.bullets&&e.bullets.length)?`<ul>${e.bullets.map(b=>`<li>${esc(b)}</li>`).join('')}</ul>`:''}</section>`).join('');
-      const projHtml=(r.projects||[]).map(p=>`<section><div class="role">${esc(p.name)}${p.link?` — <a href="${esc(p.link)}">link</a>`:''}</div><div class="when">${(p.tech||[]).map(esc).join(', ')}</div>${(p.bullets&&p.bullets.length)?`<ul>${p.bullets.map(b=>`<li>${esc(b)}</li>`).join('')}</ul>`:''}</section>`).join('');
-      const eduHtml=(r.education||[]).map(ed=>`<section><div class="role">${esc(ed.degree)} — ${esc(ed.school)}</div><div class="when">${esc(ed.start)}${ed.end?` – ${esc(ed.end)}`:''}</div>${(ed.details&&ed.details.length)?`<ul>${ed.details.map(b=>`<li>${esc(b)}</li>`).join('')}</ul>`:''}</section>`).join('');
-      return `<article><h1>${esc(r.profile.name||'Your Name')}</h1><div class="meta">${esc(r.profile.headline||'')} ${r.profile.headline&&(r.profile.location||r.profile.email||r.profile.phone||linkHtml)?'·':''} ${esc(r.profile.location||'')} ${r.profile.location&&r.profile.email?'·':''} ${esc(r.profile.email||'')} ${r.profile.phone?'·':''} ${esc(r.profile.phone||'')} ${linkHtml?('· '+linkHtml):''}</div>${r.summary?`<p>${esc(r.summary)}</p>`:''}${r.experience?.length?'<h2>Experience</h2>'+expHtml:''}${r.projects?.length?'<h2>Projects</h2>'+projHtml:''}${r.education?.length?'<h2>Education</h2>'+eduHtml:''}${(r.skills.primary?.length||r.skills.secondary?.length)?'<h2>Skills</h2><p>'+skills+'</p>':''}${r.certifications?.length?'<h2>Certifications</h2><ul>'+r.certifications.map(c=>`<li>${esc(c)}</li>`).join('')+'</ul>':''}</article>`; }
+    function renderPreview() {
+        syncFormToModel();
+        const r = current;
+        const root = document.getElementById('preview');
+        root.innerHTML = renderResumeHTML(r);
+    }
+
+    function renderResumeHTML(r) {
+        const linkHtml = (r.profile.links || []).map(l => l.url ? `<a href="${esc(l.url)}">${esc(l.label)}</a>` : `<span>${esc(l.label)}</span>`).join(' · ');
+        const skills = [r.skills.primary.length ? `<strong>Primary:</strong> ${r.skills.primary.map(esc).join(', ')}` : '', r.skills.secondary.length ? `<strong>Secondary:</strong> ${r.skills.secondary.map(esc).join(', ')}` : ''].filter(Boolean).join('<br>');
+        const expHtml = (r.experience || []).map(e => `<section><div class="role">${esc(e.role)} — ${esc(e.company)}</div><div class="when">${esc(e.location)}${e.location && e.start ? ' · ' : ''}${esc(e.start)}${e.end ? ` – ${esc(e.end)}` : ''}</div>${(e.bullets && e.bullets.length) ? `<ul>${e.bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}</section>`).join('');
+        const projHtml = (r.projects || []).map(p => `<section><div class="role">${esc(p.name)}${p.link ? ` — <a href="${esc(p.link)}">link</a>` : ''}</div><div class="when">${(p.tech || []).map(esc).join(', ')}</div>${(p.bullets && p.bullets.length) ? `<ul>${p.bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}</section>`).join('');
+        const eduHtml = (r.education || []).map(ed => `<section><div class="role">${esc(ed.degree)} — ${esc(ed.school)}</div><div class="when">${esc(ed.start)}${ed.end ? ` – ${esc(ed.end)}` : ''}</div>${(ed.details && ed.details.length) ? `<ul>${ed.details.map(b => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}</section>`).join('');
+        return `<article><h1>${esc(r.profile.name || 'Your Name')}</h1><div class="meta">${esc(r.profile.headline || '')} ${r.profile.headline && (r.profile.location || r.profile.email || r.profile.phone || linkHtml) ? '·' : ''} ${esc(r.profile.location || '')} ${r.profile.location && r.profile.email ? '·' : ''} ${esc(r.profile.email || '')} ${r.profile.phone ? '·' : ''} ${esc(r.profile.phone || '')} ${linkHtml ? ('· ' + linkHtml) : ''}</div>${r.summary ? `<p>${esc(r.summary)}</p>` : ''}${r.experience?.length ? '<h2>Experience</h2>' + expHtml : ''}${r.projects?.length ? '<h2>Projects</h2>' + projHtml : ''}${r.education?.length ? '<h2>Education</h2>' + eduHtml : ''}${(r.skills.primary?.length || r.skills.secondary?.length) ? '<h2>Skills</h2><p>' + skills + '</p>' : ''}${r.certifications?.length ? '<h2>Certifications</h2><ul>' + r.certifications.map(c => `<li>${esc(c)}</li>`).join('') + '</ul>' : ''}</article>`;
+    }
 
     // ======= Editor Actions =======
-    on('addExp', 'click', ()=>{ current.experience.push({company:'',role:'',location:'',start:'',end:'',bullets:[]}); syncModelToForm(); });
-    on('addProj','click', ()=>{ current.projects.push({name:'',link:'',tech:[],bullets:[]}); syncModelToForm(); });
-    on('addEdu','click', ()=>{ current.education.push({school:'',degree:'',start:'',end:'',details:[]}); syncModelToForm(); });
-    on('saveBtn','click', ()=>{ syncFormToModel(); upsertResume(JSON.parse(JSON.stringify(current))); renderSaved(); toast('Saved'); });
-    on('fillDefaultBtn','click', ()=>{ current = makeSampleResume(); syncModelToForm(); toast('Sample data filled'); });
-    on('exportJsonBtn','click', ()=>{ syncFormToModel(); downloadText(JSON.stringify(current,null,2), (current.title||'resume')+'.json','application/json'); });
-    on('exportHtmlBtn','click', ()=>{ const html = makeExportHtml(document.getElementById('preview').innerHTML, current.title); downloadText(html, (current.title||'resume')+'.html', 'text/html'); });
-    on('printBtn','click', ()=>{ renderPreview(); alert('Tip: In the print dialog, turn OFF "Headers & footers".'); window.print(); });
-    on('resetBtn','click', ()=>{ if(confirm('Reset this resume to a blank template?')){ current=makeBlankResume(); syncModelToForm(); toast('Reset'); }});
-    on('newResumeBtn','click', ()=>{ if(confirm('Create a new blank resume? Unsaved changes will be lost.')){ current=makeBlankResume(); syncModelToForm(); showSection('editor'); }});
+    on('addExp', 'click', () => {
+        current.experience.push({company: '', role: '', location: '', start: '', end: '', bullets: []});
+        syncModelToForm();
+    });
+    on('addProj', 'click', () => {
+        current.projects.push({name: '', link: '', tech: [], bullets: []});
+        syncModelToForm();
+    });
+    on('addEdu', 'click', () => {
+        current.education.push({school: '', degree: '', start: '', end: '', details: []});
+        syncModelToForm();
+    });
+    on('saveBtn', 'click', () => {
+        syncFormToModel();
+        upsertResume(JSON.parse(JSON.stringify(current)));
+        renderSaved();
+        toast('Saved');
+    });
+    on('fillDefaultBtn', 'click', () => {
+        current = makeSampleResume();
+        syncModelToForm();
+        toast('Sample data filled');
+    });
+    on('exportJsonBtn', 'click', () => {
+        syncFormToModel();
+        downloadText(JSON.stringify(current, null, 2), (current.title || 'resume') + '.json', 'application/json');
+    });
+    on('exportHtmlBtn', 'click', () => {
+        const html = makeExportHtml(document.getElementById('preview').innerHTML, current.title);
+        downloadText(html, (current.title || 'resume') + '.html', 'text/html');
+    });
+    on('printBtn', 'click', () => {
+        renderPreview();
+        alert('Tip: In the print dialog, turn OFF "Headers & footers".');
+        window.print();
+    });
+    on('resetBtn', 'click', () => {
+        if (confirm('Reset this resume to a blank template?')) {
+            current = makeBlankResume();
+            syncModelToForm();
+            toast('Reset');
+        }
+    });
+    on('newResumeBtn', 'click', () => {
+        if (confirm('Create a new blank resume? Unsaved changes will be lost.')) {
+            current = makeBlankResume();
+            syncModelToForm();
+            showSection('editor');
+        }
+    });
 
-    function on(id,ev,fn){ const n=document.getElementById(id); if(n) n.addEventListener(ev,fn) }
+    function on(id, ev, fn) {
+        const n = document.getElementById(id);
+        if (n) n.addEventListener(ev, fn)
+    }
 
     // ======= Saved =======
-    on('importJson','change', async e=>{ const file=e.target.files?.[0]; if(!file) return; const txt=await file.text(); try{ const r=JSON.parse(txt); if(!r.id) r.id=uuid(); if(!r.meta) r.meta={createdAt:now(),updatedAt:now()}; upsertResume(r); renderSaved(); toast('Imported'); }catch{ alert('Invalid JSON'); } e.target.value=''; });
-    function renderSaved(){ const grid=el('savedGrid'); grid.innerHTML=''; if(!allResumes.length){ const empty=document.createElement('div'); empty.className='card card-pad'; empty.innerHTML='<div class="muted">No saved resumes yet. Build one in the Editor and hit Save.</div>'; grid.appendChild(empty); return;} allResumes.forEach(r=>{ const card=document.createElement('div'); card.className='card card-pad'; card.innerHTML=`<h3>${esc(r.title||'Untitled')}</h3><div class="muted">${esc(r.profile?.name||'')} · updated ${(new Date(r.meta?.updatedAt||now())).toLocaleString()}</div><div style="height:8px"></div><div class="toolbar"><button class="btn" data-act="edit">Edit</button><button class="btn" data-act="dup">Duplicate</button><button class="btn" data-act="expjson">Export JSON</button><button class="btn" data-act="exhtml">Export HTML</button><button class="btn" data-act="del">Delete</button></div>`; card.querySelector('[data-act="edit"]').onclick=()=>{ current=JSON.parse(JSON.stringify(r)); syncModelToForm(); showSection('editor'); }; card.querySelector('[data-act="dup"]').onclick=()=>{ const c=JSON.parse(JSON.stringify(r)); c.id=uuid(); c.title=(r.title||'Untitled')+' (copy)'; upsertResume(c); renderSaved(); toast('Duplicated'); }; card.querySelector('[data-act="expjson"]').onclick=()=>downloadText(JSON.stringify(r,null,2),(r.title||'resume')+'.json','application/json'); card.querySelector('[data-act="exhtml"]').onclick=()=>{ const old=current; current=r; const html=makeExportHtml(renderResumeHTML(r), r.title); current=old; downloadText(html,(r.title||'resume')+'.html','text/html'); }; card.querySelector('[data-act="del"]').onclick=()=>{ if(confirm('Delete this resume?')){ deleteResume(r.id); renderSaved(); } }; grid.appendChild(card); }); }
+    on('importJson', 'change', async e => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const txt = await file.text();
+        try {
+            const r = JSON.parse(txt);
+            if (!r.id) r.id = uuid();
+            if (!r.meta) r.meta = {createdAt: now(), updatedAt: now()};
+            upsertResume(r);
+            renderSaved();
+            toast('Imported');
+        } catch {
+            alert('Invalid JSON');
+        }
+        e.target.value = '';
+    });
+
+    function renderSaved() {
+        const grid = el('savedGrid');
+        grid.innerHTML = '';
+        if (!allResumes.length) {
+            const empty = document.createElement('div');
+            empty.className = 'card card-pad';
+            empty.innerHTML = '<div class="muted">No saved resumes yet. Build one in the Editor and hit Save.</div>';
+            grid.appendChild(empty);
+            return;
+        }
+        allResumes.forEach(r => {
+            const card = document.createElement('div');
+            card.className = 'card card-pad';
+            card.innerHTML = `<h3>${esc(r.title || 'Untitled')}</h3><div class="muted">${esc(r.profile?.name || '')} · updated ${(new Date(r.meta?.updatedAt || now())).toLocaleString()}</div><div style="height:8px"></div><div class="toolbar"><button class="btn" data-act="edit">Edit</button><button class="btn" data-act="dup">Duplicate</button><button class="btn" data-act="expjson">Export JSON</button><button class="btn" data-act="exhtml">Export HTML</button><button class="btn" data-act="del">Delete</button></div>`;
+            card.querySelector('[data-act="edit"]').onclick = () => {
+                current = JSON.parse(JSON.stringify(r));
+                syncModelToForm();
+                showSection('editor');
+            };
+            card.querySelector('[data-act="dup"]').onclick = () => {
+                const c = JSON.parse(JSON.stringify(r));
+                c.id = uuid();
+                c.title = (r.title || 'Untitled') + ' (copy)';
+                upsertResume(c);
+                renderSaved();
+                toast('Duplicated');
+            };
+            card.querySelector('[data-act="expjson"]').onclick = () => downloadText(JSON.stringify(r, null, 2), (r.title || 'resume') + '.json', 'application/json');
+            card.querySelector('[data-act="exhtml"]').onclick = () => {
+                const old = current;
+                current = r;
+                const html = makeExportHtml(renderResumeHTML(r), r.title);
+                current = old;
+                downloadText(html, (r.title || 'resume') + '.html', 'text/html');
+            };
+            card.querySelector('[data-act="del"]').onclick = () => {
+                if (confirm('Delete this resume?')) {
+                    deleteResume(r.id);
+                    renderSaved();
+                }
+            };
+            grid.appendChild(card);
+        });
+    }
 
     // ======= Export HTML helper =======
-    function makeExportHtml(bodyHtml, title){ const css=`@page{margin:14mm}body{font-family:Inter,Arial,sans-serif;color:#111;max-width:980px;margin:0 auto;padding:24px}h1{font-size:28px;margin:0 0 8px}.meta{color:#444;font-size:13px;margin-bottom:8px}h2{font-size:16px;margin:18px 0 8px;border-bottom:1px solid #e5e7eb;padding-bottom:6px}ul{margin:0 0 12px 18px;padding:0}li{margin:6px 0}.role{font-weight:600}.when{color:#555;font-size:12px}`; return `<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>${esc(title||'Resume')}</title><style>${css}</style></head><body>${bodyHtml}</body></html>` }
-    function downloadText(text, filename, type){ const blob=new Blob([text],{type}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; a.click(); setTimeout(()=>URL.revokeObjectURL(url),5000); }
+    function makeExportHtml(bodyHtml, title) {
+        const css = `@page{margin:14mm}body{font-family:Inter,Arial,sans-serif;color:#111;max-width:980px;margin:0 auto;padding:24px}h1{font-size:28px;margin:0 0 8px}.meta{color:#444;font-size:13px;margin-bottom:8px}h2{font-size:16px;margin:18px 0 8px;border-bottom:1px solid #e5e7eb;padding-bottom:6px}ul{margin:0 0 12px 18px;padding:0}li{margin:6px 0}.role{font-weight:600}.when{color:#555;font-size:12px}`;
+        return `<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>${esc(title || 'Resume')}</title><style>${css}</style></head><body>${bodyHtml}</body></html>`
+    }
+
+    function downloadText(text, filename, type) {
+        const blob = new Blob([text], {type});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+    }
 
     // ======= Toast =======
-    function toast(msg){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; document.body.appendChild(t); Object.assign(t.style,{position:'fixed',bottom:'18px',left:'50%',transform:'translateX(-50%)',background:'#111827',color:'#fff',padding:'8px 10px',borderRadius:'8px',zIndex:9999,opacity:0,transition:'opacity .2s'});} t.textContent=msg; t.style.opacity=1; setTimeout(()=>t.style.opacity=0,1200); }
+    function toast(msg) {
+        let t = document.getElementById('toast');
+        if (!t) {
+            t = document.createElement('div');
+            t.id = 'toast';
+            document.body.appendChild(t);
+            Object.assign(t.style, {
+                position: 'fixed',
+                bottom: '18px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                background: '#111827',
+                color: '#fff',
+                padding: '8px 10px',
+                borderRadius: '8px',
+                zIndex: 9999,
+                opacity: 0,
+                transition: 'opacity .2s'
+            });
+        }
+        t.textContent = msg;
+        t.style.opacity = 1;
+        setTimeout(() => t.style.opacity = 0, 1200);
+    }
 
     // ======= Inputs → Preview =======
-    ;['title','name','headline','location','email','phone','links','summary','skillsPrimary','skillsSecondary','certs'].forEach(k=>{ const n=f[k]; if(n) n.addEventListener('input',()=>renderPreview()); });
+    ;['title', 'name', 'headline', 'location', 'email', 'phone', 'links', 'summary', 'skillsPrimary', 'skillsSecondary', 'certs'].forEach(k => {
+        const n = f[k];
+        if (n) n.addEventListener('input', () => renderPreview());
+    });
 
     // ======= AI: upload + extract + call OpenRouter (structured output) =======
     const keyInput = el('ai_key');
     const rememberKey = el('rememberKey');
     // Load saved key if any
-    try{ const savedKey = localStorage.getItem(API_STORAGE_KEY); if(savedKey){ keyInput.value = savedKey; rememberKey.checked = true; } }catch{}
-    rememberKey.addEventListener('change', ()=>{ if(!rememberKey.checked){ localStorage.removeItem(API_STORAGE_KEY);} else if(keyInput.value.trim()){ localStorage.setItem(API_STORAGE_KEY, keyInput.value.trim()); } });
-    keyInput.addEventListener('input', ()=>{ if(rememberKey.checked){ localStorage.setItem(API_STORAGE_KEY, keyInput.value.trim()); }});
+    try {
+        const savedKey = localStorage.getItem(API_STORAGE_KEY);
+        if (savedKey) {
+            keyInput.value = savedKey;
+            rememberKey.checked = true;
+        }
+    } catch {
+    }
+    rememberKey.addEventListener('change', () => {
+        if (!rememberKey.checked) {
+            localStorage.removeItem(API_STORAGE_KEY);
+        } else if (keyInput.value.trim()) {
+            localStorage.setItem(API_STORAGE_KEY, keyInput.value.trim());
+        }
+    });
+    keyInput.addEventListener('input', () => {
+        if (rememberKey.checked) {
+            localStorage.setItem(API_STORAGE_KEY, keyInput.value.trim());
+        }
+    });
 
     const drop = el('dropZone');
     const fileInput = el('ai_file');
     const srcArea = el('ai_src');
 
-    ;['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault(); drop.classList.add('drag');}));
-    ;['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault(); drop.classList.remove('drag'); if(ev==='drop'){ const f=e.dataTransfer.files?.[0]; if(f) handleFile(f); }}));
-    fileInput.addEventListener('change', e=>{ const f=e.target.files?.[0]; if(f) handleFile(f); e.target.value=''; });
-
-    async function handleFile(file){ try{ const ext=file.name.toLowerCase().split('.').pop(); let text=''; if(ext==='pdf'){ text = await extractTextFromPDF(file); } else { text = await file.text(); } srcArea.value = text.trim(); toast('Text extracted'); } catch(err){ console.error(err); alert('Could not read file'); } }
-
-    async function extractTextFromPDF(file){ const buf = await file.arrayBuffer(); const pdf = await pdfjsLib.getDocument({data: buf}).promise; let out=''; for(let i=1;i<=pdf.numPages;i++){ const page = await pdf.getPage(i); const content = await page.getTextContent(); out += content.items.map(it=>it.str).join(' ') + '\n\n'; } return out; }
-
-    on('ai_clearBtn','click', ()=>{ srcArea.value=''; aiResume=null; el('aiPreview').innerHTML=''; });
-
-    on('ai_generateBtn','click', async ()=>{
-      const key = keyInput.value.trim(); if(!key){ alert('Add your OpenRouter API key first.'); return; }
-      const source = srcArea.value.trim(); if(!source){ alert('Upload a resume first.'); return; }
-      toast('Generating…');
-      try{
-        const schema = resumeJsonSchema();
-        const payload = {
-          model: 'openai/gpt-oss-20b:free',
-          messages: [
-            { role:'system', content:'You are an expert resume editor. Convert the user\'s resume into a concise, ATS-friendly single-page JSON per the provided schema. Use crisp, achievement-focused bullets with measurable outcomes when possible. Use American-style month ranges (YYYY-MM). Do not invent employment.' },
-            { role:'user', content: 'Here is the raw resume text to normalize:' },
-            { role:'user', content: source }
-          ],
-          temperature: 0.2,
-          response_format: {
-            type: 'json_schema',
-            json_schema: { name: 'Resume', schema, strict: true }
-          }
-        };
-        const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Bearer ' + key,
-            'Content-Type': 'application/json',
-            'X-Title': 'Free Resume Builder (Local)'
-          },
-          body: JSON.stringify(payload)
-        });
-        if(!res.ok){ const t=await res.text(); throw new Error('OpenRouter error: '+t); }
-        const data = await res.json();
-        const content = data.choices?.[0]?.message?.content || '';
-        let parsed = null;
-        try{ parsed = JSON.parse(content); }catch{ /* sometimes models wrap JSON in code fences */ const m = content.match(/\{[\s\S]*\}$/); if(m){ parsed = JSON.parse(m[0]); } }
-        if(!parsed) throw new Error('Model returned non-JSON.');
-        // align with our internal shape
-        aiResume = normalizeIncomingResume(parsed);
-        el('aiPreview').innerHTML = renderResumeHTML(aiResume);
-        toast('AI resume ready');
-      }catch(err){ console.error(err); alert(err.message || 'Failed to generate'); }
+    ;['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => {
+        e.preventDefault();
+        drop.classList.add('drag');
+    }));
+    ;['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => {
+        e.preventDefault();
+        drop.classList.remove('drag');
+        if (ev === 'drop') {
+            const f = e.dataTransfer.files?.[0];
+            if (f) handleFile(f);
+        }
+    }));
+    fileInput.addEventListener('change', e => {
+        const f = e.target.files?.[0];
+        if (f) handleFile(f);
+        e.target.value = '';
     });
 
-    on('ai_applyBtn','click', ()=>{ if(!aiResume){ alert('Nothing to apply yet.'); return;} current = { ...aiResume, id: current.id, meta: {createdAt: current.meta.createdAt || now(), updatedAt: now()} }; syncModelToForm(); showSection('editor'); toast('Applied to editor'); });
-    on('ai_saveBtn','click', ()=>{ if(!aiResume){ alert('Nothing to save yet.'); return;} const r = JSON.parse(JSON.stringify(aiResume)); if(!r.id) r.id = uuid(); r.meta = r.meta || {createdAt: now(), updatedAt: now()}; upsertResume(r); renderSaved(); toast('Saved AI result'); });
+    async function handleFile(file) {
+        try {
+            const ext = file.name.toLowerCase().split('.').pop();
+            let text = '';
+            if (ext === 'pdf') {
+                text = await extractTextFromPDF(file);
+            } else {
+                text = await file.text();
+            }
+            srcArea.value = text.trim();
+            toast('Text extracted');
+        } catch (err) {
+            console.error(err);
+            alert('Could not read file');
+        }
+    }
 
-    function resumeJsonSchema(){ return {
-      type:'object', additionalProperties:false, required:['profile'], properties:{
-        id:{type:'string'}, title:{type:'string'},
-        meta:{type:'object', additionalProperties:true, properties:{createdAt:{type:'string'}, updatedAt:{type:'string'}}},
-        profile:{type:'object', additionalProperties:false, required:[], properties:{ name:{type:'string'}, headline:{type:'string'}, location:{type:'string'}, email:{type:'string'}, phone:{type:'string'}, links:{type:'array', items:{type:'object', properties:{label:{type:'string'}, url:{type:'string'}}, required:['label'], additionalProperties:false}} }},
-        summary:{type:'string'},
-        experience:{type:'array', items:{type:'object', additionalProperties:false, properties:{ company:{type:'string'}, role:{type:'string'}, location:{type:'string'}, start:{type:'string'}, end:{type:'string'}, bullets:{type:'array', items:{type:'string'}} }}},
-        projects:{type:'array', items:{type:'object', additionalProperties:false, properties:{ name:{type:'string'}, link:{type:'string'}, tech:{type:'array', items:{type:'string'}}, bullets:{type:'array', items:{type:'string'}} }}},
-        education:{type:'array', items:{type:'object', additionalProperties:false, properties:{ school:{type:'string'}, degree:{type:'string'}, start:{type:'string'}, end:{type:'string'}, details:{type:'array', items:{type:'string'}} }}},
-        skills:{type:'object', additionalProperties:false, properties:{ primary:{type:'array', items:{type:'string'}}, secondary:{type:'array', items:{type:'string'}} }},
-        certifications:{type:'array', items:{type:'string'}}
-      }
-    } }
+    async function extractTextFromPDF(file) {
+        const buf = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({data: buf}).promise;
+        let out = '';
+        for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const content = await page.getTextContent();
+            out += content.items.map(it => it.str).join(' ') + '\n\n';
+        }
+        return out;
+    }
 
-    function normalizeIncomingResume(r){
-      // Best-effort mapping to our shape
-      const safeArr = v => Array.isArray(v)? v : (v? [String(v)] : []);
-      const obj = {
-        id: r.id || uuid(),
-        title: r.title || 'AI Resume',
-        meta: { createdAt: now(), updatedAt: now() },
-        profile: {
-          name: r.profile?.name || '',
-          headline: r.profile?.headline || r.headline || '',
-          location: r.profile?.location || '',
-          email: r.profile?.email || '',
-          phone: r.profile?.phone || '',
-          links: (r.profile?.links || []).map(x=>({label: x.label || x.name || x.url || 'Link', url: x.url || ''}))
-        },
-        summary: r.summary || '',
-        experience: safeArr(r.experience).map(e=>({ company:e.company||'', role:e.role||e.title||'', location:e.location||'', start:e.start||'', end:e.end||'', bullets: safeArr(e.bullets) })),
-        projects: safeArr(r.projects).map(p=>({ name:p.name||'', link:p.link||'', tech: safeArr(p.tech), bullets: safeArr(p.bullets) })),
-        education: safeArr(r.education).map(ed=>({ school:ed.school||'', degree:ed.degree||'', start:ed.start||'', end:ed.end||'', details: safeArr(ed.details) })),
-        skills: { primary: safeArr(r.skills?.primary || r.skills_primary || r.skills), secondary: safeArr(r.skills?.secondary || r.skills_secondary) },
-        certifications: safeArr(r.certifications)
-      };
-      return obj;
+    on('ai_clearBtn', 'click', () => {
+        srcArea.value = '';
+        aiResume = null;
+        el('aiPreview').innerHTML = '';
+    });
+
+    const aiLoader = document.getElementById("aiLoader");
+
+    on('ai_generateBtn', 'click', async () => {
+        const key = keyInput.value.trim();
+        if (!key) {
+            alert('Add your OpenRouter API key first.');
+            return;
+        }
+        const source = srcArea.value.trim();
+        if (!source) {
+            alert('Upload a resume first.');
+            return;
+        }
+        toast('Generating…');
+        try {
+            aiLoader.classList.add("active");
+            const schema = resumeJsonSchema();
+            const payload = {
+                model: 'openai/gpt-oss-20b:free',
+                messages: [
+                    {
+                        role: 'system',
+                        content: 'You are an expert resume editor. Convert the user\'s resume into a concise, ATS-friendly single-page JSON per the provided schema. Use crisp, achievement-focused bullets with measurable outcomes when possible. Use American-style month ranges (YYYY-MM). Do not invent employment.'
+                    },
+                    {role: 'user', content: 'Here is the raw resume text to normalize:'},
+                    {role: 'user', content: source}
+                ],
+                temperature: 0.2,
+                response_format: {
+                    type: 'json_schema',
+                    json_schema: {name: 'Resume', schema, strict: true}
+                }
+            };
+            const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + key,
+                    'Content-Type': 'application/json',
+                    'X-Title': 'Free Resume Builder (Local)'
+                },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) {
+                const t = await res.text();
+                throw new Error('OpenRouter error: ' + t);
+            }
+            const data = await res.json();
+            const content = data.choices?.[0]?.message?.content || '';
+            let parsed = null;
+            try {
+                parsed = JSON.parse(content);
+            } catch { /* sometimes models wrap JSON in code fences */
+                const m = content.match(/\{[\s\S]*\}$/);
+                if (m) {
+                    parsed = JSON.parse(m[0]);
+                }
+            }
+            if (!parsed) throw new Error('Model returned non-JSON.');
+            // align with our internal shape
+            aiResume = normalizeIncomingResume(parsed);
+            el('aiPreview').innerHTML = renderResumeHTML(aiResume);
+            toast('AI resume ready');
+        } catch (err) {
+            console.error(err);
+            alert(err.message || 'Failed to generate');
+        } finally {
+            aiLoader.classList.remove("active"); // hide loader
+        }
+    });
+
+    on('ai_applyBtn', 'click', () => {
+        if (!aiResume) {
+            alert('Nothing to apply yet.');
+            return;
+        }
+        current = {...aiResume, id: current.id, meta: {createdAt: current.meta.createdAt || now(), updatedAt: now()}};
+        syncModelToForm();
+        showSection('editor');
+        toast('Applied to editor');
+    });
+    on('ai_saveBtn', 'click', () => {
+        if (!aiResume) {
+            alert('Nothing to save yet.');
+            return;
+        }
+        const r = JSON.parse(JSON.stringify(aiResume));
+        if (!r.id) r.id = uuid();
+        r.meta = r.meta || {createdAt: now(), updatedAt: now()};
+        upsertResume(r);
+        renderSaved();
+        toast('Saved AI result');
+    });
+
+    function resumeJsonSchema() {
+        return {
+            type: 'object', additionalProperties: false, required: ['profile'], properties: {
+                id: {type: 'string'}, title: {type: 'string'},
+                meta: {
+                    type: 'object',
+                    additionalProperties: true,
+                    properties: {createdAt: {type: 'string'}, updatedAt: {type: 'string'}}
+                },
+                profile: {
+                    type: 'object',
+                    additionalProperties: false,
+                    required: [],
+                    properties: {
+                        name: {type: 'string'},
+                        headline: {type: 'string'},
+                        location: {type: 'string'},
+                        email: {type: 'string'},
+                        phone: {type: 'string'},
+                        links: {
+                            type: 'array',
+                            items: {
+                                type: 'object',
+                                properties: {label: {type: 'string'}, url: {type: 'string'}},
+                                required: ['label'],
+                                additionalProperties: false
+                            }
+                        }
+                    }
+                },
+                summary: {type: 'string'},
+                experience: {
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        additionalProperties: false,
+                        properties: {
+                            company: {type: 'string'},
+                            role: {type: 'string'},
+                            location: {type: 'string'},
+                            start: {type: 'string'},
+                            end: {type: 'string'},
+                            bullets: {type: 'array', items: {type: 'string'}}
+                        }
+                    }
+                },
+                projects: {
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        additionalProperties: false,
+                        properties: {
+                            name: {type: 'string'},
+                            link: {type: 'string'},
+                            tech: {type: 'array', items: {type: 'string'}},
+                            bullets: {type: 'array', items: {type: 'string'}}
+                        }
+                    }
+                },
+                education: {
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        additionalProperties: false,
+                        properties: {
+                            school: {type: 'string'},
+                            degree: {type: 'string'},
+                            start: {type: 'string'},
+                            end: {type: 'string'},
+                            details: {type: 'array', items: {type: 'string'}}
+                        }
+                    }
+                },
+                skills: {
+                    type: 'object',
+                    additionalProperties: false,
+                    properties: {
+                        primary: {type: 'array', items: {type: 'string'}},
+                        secondary: {type: 'array', items: {type: 'string'}}
+                    }
+                },
+                certifications: {type: 'array', items: {type: 'string'}}
+            }
+        }
+    }
+
+    function normalizeIncomingResume(r) {
+        // Best-effort mapping to our shape
+        const safeArr = v => Array.isArray(v) ? v : (v ? [String(v)] : []);
+        const obj = {
+            id: r.id || uuid(),
+            title: r.title || 'AI Resume',
+            meta: {createdAt: now(), updatedAt: now()},
+            profile: {
+                name: r.profile?.name || '',
+                headline: r.profile?.headline || r.headline || '',
+                location: r.profile?.location || '',
+                email: r.profile?.email || '',
+                phone: r.profile?.phone || '',
+                links: (r.profile?.links || []).map(x => ({
+                    label: x.label || x.name || x.url || 'Link',
+                    url: x.url || ''
+                }))
+            },
+            summary: r.summary || '',
+            experience: safeArr(r.experience).map(e => ({
+                company: e.company || '',
+                role: e.role || e.title || '',
+                location: e.location || '',
+                start: e.start || '',
+                end: e.end || '',
+                bullets: safeArr(e.bullets)
+            })),
+            projects: safeArr(r.projects).map(p => ({
+                name: p.name || '',
+                link: p.link || '',
+                tech: safeArr(p.tech),
+                bullets: safeArr(p.bullets)
+            })),
+            education: safeArr(r.education).map(ed => ({
+                school: ed.school || '',
+                degree: ed.degree || '',
+                start: ed.start || '',
+                end: ed.end || '',
+                details: safeArr(ed.details)
+            })),
+            skills: {
+                primary: safeArr(r.skills?.primary || r.skills_primary || r.skills),
+                secondary: safeArr(r.skills?.secondary || r.skills_secondary)
+            },
+            certifications: safeArr(r.certifications)
+        };
+        return obj;
     }
 
     // ======= Init =======
     syncModelToForm();
     renderPreview();
 
-  </script>
+</script>
 </body>
 </html>
