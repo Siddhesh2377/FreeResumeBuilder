@@ -463,10 +463,51 @@
             .section.fade-leave-active { transition: none; }
         }
 
+        /* === Top progress (NProgress vibe) === */
+        #aiTopProgress{
+            position:absolute; left:0; right:0; bottom:0; height:3px;
+            pointer-events:none; opacity:0; transition:opacity .15s ease;
+        }
+        #aiTopProgress.active{ opacity:1; }
+
+        #aiTopProgress .bar{
+            position:absolute; inset:0; transform-origin:left center;
+            transform:scaleX(0); transition:transform .2s ease;
+            background:linear-gradient(90deg,#2563eb,#22d3ee);
+            box-shadow:0 0 8px rgba(37,99,235,.5);
+        }
+        #aiTopProgress.fail .bar{
+            background:linear-gradient(90deg,#ef4444,#f97316);
+        }
+
+        /* shimmer */
+        #aiTopProgress .bar::after{
+            content:""; position:absolute; inset:0;
+            background-image:linear-gradient(90deg,rgba(255,255,255,0) 0,
+            rgba(255,255,255,.45) 50%,
+            rgba(255,255,255,0) 100%);
+            background-size:150px 100%;
+            animation:aiShimmer 1s linear infinite;
+            opacity:.6;
+        }
+        @keyframes aiShimmer{
+            from{background-position:-150px 0}
+            to{background-position:150px 0}
+        }
+        @media (prefers-reduced-motion: reduce){
+            #aiTopProgress .bar::after{ animation:none; }
+        }
+        #aiTopProgress{ bottom:-1px; }
     </style>
 </head>
 <body>
 <header>
+    <!-- progress bar lives INSIDE header -->
+    <div id="aiTopProgress" role="progressbar"
+         aria-label="Generating with AI" aria-valuemin="0"
+         aria-valuemax="100" aria-valuenow="0" style="z-index:20">
+        <div class="bar"></div>
+    </div>
     <div class="header-inner">
         <div class="brand">
             <div aria-hidden="true" class="logo"></div>
@@ -487,19 +528,6 @@
             <button class="btn primary" id="newResumeBtn">New Resume</button>
         </nav>
     </div>
-    <script type="application/ld+json">
-        {
-            "@context":"https://schema.org",
-            "@type":"WebApplication",
-            "name":"Free Resume Builder",
-            "url":"https://free-resume-builder-six.vercel.app/",
-            "applicationCategory":"BusinessApplication",
-            "operatingSystem":"Web",
-            "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
-            "description":"Build a professional resume in minutes. Free, no signup, AI-powered import from PDF or text. Export as PDF instantly."
-        }
-    </script>
-
 </header>
 
 <main class="container">
@@ -708,6 +736,44 @@ ONNX Runtime"></textarea>
         }
     }
     updateGitHubStars();
+    // === Tiny progress controller ===
+    const AIPROG = (() => {
+        const el = document.getElementById('aiTopProgress');
+        const bar = el.querySelector('.bar');
+        let timer = null, value = 0;
+
+        const apply = () => {
+            bar.style.transform = `scaleX(${value})`;
+            el.setAttribute('aria-valuenow', Math.round(value*100));
+        };
+
+        const start = () => {
+            clearInterval(timer);
+            el.classList.remove('fail');
+            el.classList.add('active');
+            value = 0.08; apply();
+
+            // ease toward 85% so it looks alive while waiting
+            timer = setInterval(() => {
+                value += (0.92 - value) * 0.12; // asymptotic crawl
+                if (value > 0.85) value = 0.85;
+                apply();
+            }, 400);
+        };
+
+        const finish = (ok = true) => {
+            clearInterval(timer);
+            if (!ok) el.classList.add('fail');
+            value = 1; apply();
+            setTimeout(() => {
+                el.classList.remove('active','fail');
+                value = 0; apply();
+            }, 320);
+        };
+
+        const fail = () => finish(false);
+        return { start, finish, fail };
+    })();
 
     // ======= Routing =======
     const sections = {
@@ -1319,6 +1385,8 @@ ONNX Runtime"></textarea>
     const aiLoader = document.getElementById("aiLoader");
 
     on('ai_generateBtn', 'click', async () => {
+        AIPROG.start();
+        aiLoader.classList.add("active");
         const key = keyInput.value.trim();
         if (!key) {
             alert('Add your OpenRouter API key first.');
@@ -1331,7 +1399,6 @@ ONNX Runtime"></textarea>
         }
         toast('Generating…');
         try {
-            aiLoader.classList.add("active");
             const schema = resumeJsonSchema();
             const payload = {
                 model: 'cognitivecomputations/dolphin-mistral-24b-venice-edition:free',
@@ -1359,6 +1426,8 @@ ONNX Runtime"></textarea>
                 body: JSON.stringify(payload)
             });
             if (!res.ok) {
+                AIPROG.fail();        // error = red/orange
+
                 const t = await res.text();
                 throw new Error('OpenRouter error: ' + t);
             }
@@ -1378,11 +1447,14 @@ ONNX Runtime"></textarea>
             aiResume = normalizeIncomingResume(parsed);
             el('aiPreview').innerHTML = renderResumeHTML(aiResume);
             toast('AI resume ready');
+            AIPROG.finish();      // success = blue
+
         } catch (err) {
             console.error(err);
             alert(err.message || 'Failed to generate');
         } finally {
-            aiLoader.classList.remove("active"); // hide loader
+            aiLoader.classList.remove("active");
+
         }
     });
 
@@ -1548,6 +1620,18 @@ ONNX Runtime"></textarea>
     syncModelToForm();
     renderPreview();
 
+</script>
+<script type="application/ld+json">
+    {
+        "@context":"https://schema.org",
+        "@type":"WebApplication",
+        "name":"Free Resume Builder",
+        "url":"https://free-resume-builder-six.vercel.app/",
+        "applicationCategory":"BusinessApplication",
+        "operatingSystem":"Web",
+        "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
+        "description":"Build a professional resume in minutes. Free, no signup, AI-powered import from PDF or text. Export as PDF instantly."
+    }
 </script>
 </body>
 </html>
