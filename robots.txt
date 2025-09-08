@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://free-resume-builder-six.vercel.app/sitemap.xml
