@@ -429,6 +429,40 @@
                 to { transform: rotate(360deg); }
             }
         }
+
+        /* while animating we temporarily force display:block */
+        .section.fade-enter, .section.fade-leave { display: block; }
+
+        .section.fade-enter {
+            opacity: 0;
+            transform: translateY(8px) scale(.98);
+            filter: blur(42px);
+        }
+        .section.fade-enter-active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+            transition: opacity .220s ease, transform .220s ease, filter .220s ease;
+        }
+
+        .section.fade-leave {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+        .section.fade-leave-active {
+            opacity: 0;
+            transform: translateY(8px) scale(.98);
+            filter: blur(42px);
+            transition: opacity .180s ease, transform .180s ease, filter .180s ease;
+        }
+
+        /* accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            .section.fade-enter-active,
+            .section.fade-leave-active { transition: none; }
+        }
+
     </style>
 </head>
 <body>
@@ -684,12 +718,56 @@ ONNX Runtime"></textarea>
     };
     document.querySelectorAll('[data-nav]').forEach(btn => btn.addEventListener('click', () => showSection(btn.dataset.nav)));
 
+    let currentKey = 'editor';
+    let isTransitioning = false;
+
     function showSection(key) {
-        for (const k in sections) {
-            sections[k].classList.toggle('active', k === key);
+        if (!sections[key] || isTransitioning || key === currentKey) return;
+
+        const from = sections[currentKey];
+        const to = sections[key];
+        isTransitioning = true;
+
+        // ENTER: prep next section
+        to.classList.remove('active');
+        to.classList.add('fade-enter');
+        to.style.display = 'block'; // make it measurable for transition
+        requestAnimationFrame(() => to.classList.add('fade-enter-active'));
+
+        // LEAVE: animate current out (if exists)
+        if (from) {
+            from.classList.add('fade-leave');
+            requestAnimationFrame(() => from.classList.add('fade-leave-active'));
         }
-        if (key === 'saved') renderSaved();
+
+        // when either animation ends, finalize
+        const done = () => {
+            if (from) {
+                from.classList.remove('fade-leave', 'fade-leave-active', 'active');
+                from.style.display = 'none';
+            }
+            to.classList.remove('fade-enter', 'fade-enter-active');
+            to.classList.add('active');
+
+            currentKey = key;
+            isTransitioning = false;
+
+            if (key === 'saved') renderSaved();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        // safety: if transitionend doesn't fire (e.g., reduced motion), fail over quickly
+        const fallback = setTimeout(done, 350);
+        const onEnd = (e) => {
+            // listen only once from the 'to' section (enter) so we don't double-call
+            if (e.target !== to) return;
+            to.removeEventListener('transitionend', onEnd);
+            clearTimeout(fallback);
+            done();
+        };
+        to.addEventListener('transitionend', onEnd);
     }
+
 
     // ======= Utils =======
     function uuid() {
