@@ -4,6 +4,12 @@
 
 Free Resume Builder is a lightweight, browser-based application that allows users to create, edit, and export professional resumes without any sign-up or subscription. It runs entirely in the browser, stores data locally, and is designed to be ATS-friendly.
 
+> **Support development**  
+> If this tool saves you time, consider sponsoring to help keep it free and add features like template sharing and cloud sync.  
+> **👉 [Become a sponsor](https://github.com/sponsors/Siddhesh2377)**
+
+[![Sponsor](https://img.shields.io/badge/Sponsor-@Siddhesh2377-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/Siddhesh2377)
+
 ## Features
 
 * **No Sign-Up Required**: All functionality is available without creating an account.
@@ -57,6 +63,14 @@ Contributions are welcome. Please fork the repository and submit a pull request 
 ## License
 
 This project is released under the MIT License. See the LICENSE file for more information.
+
+
+<p>
+  <a href="https://github.com/sponsors/Siddhesh2377" target="_blank" rel="noopener"
+     style="display:inline-block;padding:8px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;color:#111827;font-weight:600;text-decoration:none;">
+    Sponsor this project
+  </a>
+</p>
 
 ## Repository
 
